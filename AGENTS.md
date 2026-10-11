@@ -8,3 +8,6 @@
 > Commits you push to the connected branch sync back to Lovable and show up in
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
+
+- Keep scroll-position rules and portfolio stats in a browser-safe module shared with tests, so cart arrivals and displayed values remain consistent.
+- Use controlled design-system dialogs for chest inventories, so keyboard dismissal and focus management work for both automatic and manual opening.
