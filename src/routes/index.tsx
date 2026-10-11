@@ -1,9 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
-import spawn from "@/assets/spawn.png.asset.json";
-import cave from "@/assets/cave.png.asset.json";
-import nether from "@/assets/nether.png.asset.json";
-import cherry from "@/assets/cherry.png.asset.json";
+import spawn from "@/assets/spawn.png";
+import cave from "@/assets/cave.png";
+import nether from "@/assets/nether.png";
+import cherry from "@/assets/cherry.png";
 import minecart from "@/assets/minecart.png";
 import enderChest from "@/assets/ender-chest.png";
 import largeChest from "@/assets/large-chest.png";
@@ -19,9 +19,16 @@ export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       { title: `${NAME}'s World — Backend Engineer Portfolio` },
-      { name: "description", content: "An 8-bit minecart ride through the projects and skills of a backend systems engineer." },
+      {
+        name: "description",
+        content:
+          "An 8-bit minecart ride through the projects and skills of a backend systems engineer.",
+      },
       { property: "og:title", content: `${NAME}'s World — Backend Engineer` },
-      { property: "og:description", content: "Ride the minecart through C++ databases, rate-limiting proxies and more." },
+      {
+        property: "og:description",
+        content: "Ride the minecart through C++ databases, rate-limiting proxies and more.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
@@ -97,16 +104,23 @@ function Index() {
   return (
     <main style={{ height: "calc(300vw + 100vh)" }}>
       <div className="sticky top-0 h-screen w-screen overflow-hidden">
-        <div ref={trackRef} className="relative flex h-screen will-change-transform" style={{ width: "400vw" }}>
+        <div
+          ref={trackRef}
+          className="relative flex h-screen will-change-transform"
+          style={{ width: "400vw" }}
+        >
           {[spawn, cave, nether, cherry].map((bg, i) => (
             <section
               key={i}
               className="relative h-screen w-screen shrink-0 bg-cover bg-center"
-              style={{ backgroundImage: `url(${bg.url})`, imageRendering: "pixelated" }}
+              style={{ backgroundImage: `url(${bg})`, imageRendering: "pixelated" }}
             />
           ))}
 
-          <div className="rail-track pointer-events-none absolute left-0 h-5 w-full" style={{ bottom: "40%" }} />
+          <div
+            className="rail-track pointer-events-none absolute left-0 h-5 w-full"
+            style={{ bottom: "40%" }}
+          />
 
           {/* Section 1: Spawn */}
           <div className="spawn-sign" style={{ transform: `scale(${SPAWN_SIGN_SCALE})` }}>
@@ -115,7 +129,9 @@ function Index() {
               <p className="mt-4">Role: Backend Engineer</p>
             </div>
           </div>
-          <div className="spawn-prompt animate-blink text-gold text-pixel-shadow">Scroll to Explore ▶▶</div>
+          <div className="spawn-prompt animate-blink text-gold text-pixel-shadow">
+            Scroll to Explore ▶▶
+          </div>
 
           {/* Section 2: Cave */}
           <div className="mc-panel cave-crafting absolute">
@@ -124,7 +140,10 @@ function Index() {
               {Array.from({ length: 9 }).map((_, i) => {
                 const item = [0, 1, 2, 4, 7].indexOf(i);
                 return (
-                  <div key={i} className="mc-slot mc-hover crafting-slot flex items-center justify-center text-center">
+                  <div
+                    key={i}
+                    className="mc-slot mc-hover crafting-slot flex items-center justify-center text-center"
+                  >
                     {item >= 0 && <span className="text-pixel-shadow">{stack[item]}</span>}
                   </div>
                 );
@@ -133,10 +152,30 @@ function Index() {
           </div>
 
           {/* Section 3: Nether */}
-          <Button variant="ghost" className={`physical-chest ${projectsOpen ? "chest-is-open" : ""}`} onClick={() => setProjectsOpen(true)} aria-label="Open Large Chest projects" title="Large Chest — Projects">
+          <Button
+            variant="ghost"
+            className={`physical-chest ${projectsOpen ? "chest-is-open" : ""}`}
+            onClick={() => setProjectsOpen(true)}
+            aria-label="Open Large Chest projects"
+            title="Large Chest — Projects"
+          >
             <span className="chest-sprite">
-              <img src={largeChest} width={816} height={816} loading="lazy" alt="Large wooden chest" className="chest-base" />
-              <img src={largeChest} width={816} height={816} loading="lazy" alt="" className="chest-lid" />
+              <img
+                src={largeChest}
+                width={816}
+                height={816}
+                loading="lazy"
+                alt="Large wooden chest"
+                className="chest-base"
+              />
+              <img
+                src={largeChest}
+                width={816}
+                height={816}
+                loading="lazy"
+                alt=""
+                className="chest-lid"
+              />
             </span>
           </Button>
 
@@ -153,14 +192,28 @@ function Index() {
         </div>
 
         {/* Fixed minecart */}
-        <div className="pointer-events-none absolute left-1/2 -translate-x-1/2" style={{ bottom: "calc(40% + 6px)" }}>
-          <img src={minecart} alt="Minecart" width={120} height={81} className={`w-28 ${moving ? "animate-rattle" : ""}`} />
+        <div
+          className="pointer-events-none absolute left-1/2 -translate-x-1/2"
+          style={{ bottom: "calc(40% + 6px)" }}
+        >
+          <img
+            src={minecart}
+            alt="Minecart"
+            width={120}
+            height={81}
+            className={`w-28 ${moving ? "animate-rattle" : ""}`}
+          />
         </div>
         {activeWorld === 1 && (
-          <div className="xp-hud" aria-label={`LeetCode XP level ${PLAYER_STATS.level}; CGPA ${PLAYER_STATS.cgpa.toFixed(1)}`}>
+          <div
+            className="xp-hud"
+            aria-label={`LeetCode XP level ${PLAYER_STATS.level}; CGPA ${PLAYER_STATS.cgpa.toFixed(1)}`}
+          >
             <div className="xp-name">{PLAYER_STATS.cgpa.toFixed(1)} CGPA</div>
             <div className="xp-level">{PLAYER_STATS.level}</div>
-            <div className="xp-bar"><div className="xp-fill" /></div>
+            <div className="xp-bar">
+              <div className="xp-fill" />
+            </div>
           </div>
         )}
         {achievement && (
@@ -168,7 +221,11 @@ function Index() {
             <Trophy className="achievement-icon" size={32} />
             <div>
               <p>Achievement Unlocked!</p>
-              <h2>Incoming Google<br />Software Engineering Intern</h2>
+              <h2>
+                Incoming Google
+                <br />
+                Software Engineering Intern
+              </h2>
               <small>Summer 2027</small>
             </div>
           </aside>
@@ -178,19 +235,37 @@ function Index() {
       <Dialog open={projectsOpen} onOpenChange={setProjectsOpen}>
         <DialogContent className="large-inventory">
           <DialogTitle className="inventory-title text-gold">Large Chest</DialogTitle>
-          <DialogDescription className="text-[9px] text-muted-foreground">Projects</DialogDescription>
+          <DialogDescription className="text-[9px] text-muted-foreground">
+            Projects
+          </DialogDescription>
           <div className="inventory-grid">
             {Array.from({ length: 54 }, (_, i) => {
               const project = projects[i];
               return project ? (
-                <Button key={i} variant="ghost" className="inventory-cell project-slot" aria-label={project.name} aria-pressed={selectedProject === i} title={project.name} onClick={() => setSelectedProject(i)}>{project.symbol}</Button>
-              ) : <div key={i} className="inventory-cell" aria-hidden="true" />;
+                <Button
+                  key={i}
+                  variant="ghost"
+                  className="inventory-cell project-slot"
+                  aria-label={project.name}
+                  aria-pressed={selectedProject === i}
+                  title={project.name}
+                  onClick={() => setSelectedProject(i)}
+                >
+                  {project.symbol}
+                </Button>
+              ) : (
+                <div key={i} className="inventory-cell" aria-hidden="true" />
+              );
             })}
           </div>
           <div className="project-detail">
             <h3>{projects[selectedProject]?.name}</h3>
             <p>{projects[selectedProject]?.desc}</p>
-            <Button asChild variant="secondary" className="mc-btn project-link"><a href={projects[selectedProject]?.url} target="_blank" rel="noreferrer">GitHub ↗</a></Button>
+            <Button asChild variant="secondary" className="mc-btn project-link">
+              <a href={projects[selectedProject]?.url} target="_blank" rel="noreferrer">
+                GitHub ↗
+              </a>
+            </Button>
           </div>
         </DialogContent>
       </Dialog>
@@ -199,9 +274,19 @@ function Index() {
           <DialogTitle className="inventory-title text-ender">Ender Chest</DialogTitle>
           <DialogDescription className="sr-only">Contact links</DialogDescription>
           <div className="flex flex-col gap-3">
-            <Button asChild variant="secondary" className="mc-btn text-[10px]"><a href={GITHUB} target="_blank" rel="noreferrer">GitHub</a></Button>
-            <Button asChild variant="secondary" className="mc-btn text-[10px]"><a href="https://linkedin.com/" target="_blank" rel="noreferrer">LinkedIn</a></Button>
-            <Button asChild variant="secondary" className="mc-btn text-[10px]"><a href="mailto:you@example.com">Email</a></Button>
+            <Button asChild variant="secondary" className="mc-btn text-[10px]">
+              <a href={GITHUB} target="_blank" rel="noreferrer">
+                GitHub
+              </a>
+            </Button>
+            <Button asChild variant="secondary" className="mc-btn text-[10px]">
+              <a href="https://linkedin.com/" target="_blank" rel="noreferrer">
+                LinkedIn
+              </a>
+            </Button>
+            <Button asChild variant="secondary" className="mc-btn text-[10px]">
+              <a href="mailto:you@example.com">Email</a>
+            </Button>
           </div>
         </DialogContent>
       </Dialog>
