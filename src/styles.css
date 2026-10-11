@@ -160,7 +160,7 @@
 .xp-level { color: var(--xp); font-size: 23px; margin: 12px 0 7px; text-shadow: 2px 2px 0 var(--xp-shadow); }
 .xp-bar { height: 14px; border: 3px solid var(--border); background: var(--xp-track); box-shadow: 0 2px 0 var(--toast-shadow); }
 .xp-fill { height: 100%; width: 94%; background: repeating-linear-gradient(90deg, var(--xp) 0 28px, var(--xp-shadow) 28px 30px); }
-.physical-chest { position: absolute; left: calc(250vw - 64px); bottom: calc(40% + 5px); padding: 0; width: 128px; height: 112px; background: transparent; }
+.physical-chest { position: absolute; left: calc(275vw - 64px); bottom: calc(40% + 5px); padding: 0; width: 128px; height: 112px; background: transparent; }
 .physical-chest:hover, .contact-chest:hover { background: transparent; }
 .chest-sprite { position: relative; display: block; width: 128px; height: 112px; }
 .chest-sprite img { position: absolute; inset: 0; width: 128px; height: 128px; object-fit: contain; }
@@ -188,7 +188,7 @@
 @media (max-width: 640px) {
   .spawn-sign { top: 16px; left: 16px; }
   .spawn-prompt { left: 20px; font-size: 8px; }
-  .cave-crafting { left: calc(100vw + 16px); bottom: 19%; padding: 9px; }
+  .cave-crafting { left: calc(100vw + 16px); bottom: 15%; padding: 9px; }
   .crafting-slot { width: 56px; height: 56px; font-size: 6px; }
   .achievement-toast { top: 16px; right: 16px; gap: 12px; padding: 14px; }
   .large-inventory { padding: 22px 12px 12px; }

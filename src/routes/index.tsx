@@ -32,7 +32,7 @@ export const Route = createFileRoute("/")({
 const stack = ["C++", "Python", "FastAPI", "PostgreSQL", "Redis"];
 const projects = [
   { name: "IrisDB", desc: "C++ relational database engine", symbol: "DB", url: GITHUB },
-  { name: "HydroGate", desc: "C++ distributed rate-limiting proxy", symbol: "<>界".slice(0, 2), url: GITHUB },
+  { name: "HydroGate", desc: "C++ distributed rate-limiting proxy", symbol: "<>", url: GITHUB },
   { name: "MessBook", desc: "FastAPI · Hostel management backend", symbol: "Py", url: GITHUB },
 ];
 
