@@ -1,0 +1,5 @@
+- [ ] Shrink Spawn sign and position top-left.
+- [ ] Place cave crafting grid and add bottom XP display.
+- [ ] Replace project cards with an arrival-triggered Large Chest.
+- [ ] Add Cherry achievement toast and ground the contact chest.
+- [ ] Verify all four worlds and chest interactions.
