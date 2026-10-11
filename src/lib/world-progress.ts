@@ -6,5 +6,5 @@ export function worldAt(progress: number) {
 }
 
 export function isNearProjectChest(progress: number) {
-  return progress >= 2 && progress <= 2.5;
+  return progress >= 1.99 && progress <= 2.5;
 }
