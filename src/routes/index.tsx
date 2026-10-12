@@ -170,9 +170,6 @@ function Index() {
                 {lines.map((l) => (
                   <span key={l}>{l}</span>
                 ))}
-                <a href={GITHUB} target="_blank" rel="noreferrer" tabIndex={-1}>
-                  github ↗
-                </a>
               </span>
             </button>
           ))}
