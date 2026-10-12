@@ -345,9 +345,9 @@
 .hotbar li.selected { border: 3px solid var(--foreground); }
 .loot-drop {
   position: absolute; transform: translate(-50%, -110%); padding: 6px; background: transparent;
-  cursor: help; animation: mc-bob 3s steps(6) infinite;
+  cursor: help;
 }
-.loot-icon { color: var(--gold); filter: drop-shadow(0 0 6px var(--gold)); }
+.loot-icon { animation: mc-bob 3s steps(6) infinite; color: var(--gold); filter: drop-shadow(0 0 6px var(--gold)); }
 .loot-drop:nth-of-type(2) .loot-icon { color: var(--ender); filter: drop-shadow(0 0 6px var(--ender)); }
 .loot-drop:nth-of-type(3) .loot-icon { color: var(--destructive); filter: drop-shadow(0 0 6px var(--destructive)); }
 .mc-tooltip {
@@ -359,4 +359,4 @@
 .mc-tooltip strong { color: var(--gold); font-weight: normal; font-size: 11px; }
 .mc-tooltip em { font-style: normal; color: var(--ender); }
 .loot-drop:hover .mc-tooltip, .loot-drop:focus-visible .mc-tooltip { display: flex; }
-@media (prefers-reduced-motion: reduce) { .name-tag, .loot-drop { animation: none; } }
+@media (prefers-reduced-motion: reduce) { .name-tag, .loot-icon { animation: none; } }
