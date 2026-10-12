@@ -12,13 +12,13 @@ export const TERRAIN: [number, number][] = [
 
 export function terrainY(x: number) {
   const pts = TERRAIN;
-  if (x <= pts[0][0]) return pts[0][1];
+  if (x <= pts[0]![0]) return pts[0]![1];
   for (let i = 1; i < pts.length; i++) {
-    const [x1, y1] = pts[i];
-    const [x0, y0] = pts[i - 1];
+    const [x1, y1] = pts[i]!;
+    const [x0, y0] = pts[i - 1]!;
     if (x <= x1) return y0 + ((y1 - y0) * (x - x0)) / (x1 - x0);
   }
-  return pts[pts.length - 1][1];
+  return pts[pts.length - 1]![1];
 }
 
 export function terrainPath() {
@@ -30,5 +30,5 @@ export function worldAt(progress: number) {
 }
 
 export function biomeAt(progress: number): Biome {
-  return BIOMES[worldAt(progress)];
+  return BIOMES[worldAt(progress)]!;
 }
