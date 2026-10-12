@@ -6,11 +6,18 @@ import nether from "@/assets/nether.png";
 import cherry from "@/assets/cherry.png";
 import minecart from "@/assets/minecart.png";
 import enderChest from "@/assets/ender-chest.png";
-import largeChest from "@/assets/large-chest.png";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
-import { Trophy } from "lucide-react";
-import { isNearProjectChest, PLAYER_STATS, SPAWN_SIGN_SCALE, worldAt } from "@/lib/world-progress";
+import { BookOpen, Flame, Gem, Trophy } from "lucide-react";
+import {
+  biomeAt,
+  CART_SCALE,
+  PLAYER_STATS,
+  terrainPath,
+  terrainY,
+  worldAt,
+  type Biome,
+} from "@/lib/world-progress";
 
 const NAME = "Sahid";
 const GITHUB = "https://github.com/";
@@ -36,21 +43,40 @@ export const Route = createFileRoute("/")({
   component: Index,
 });
 
-const stack = ["C++", "Python", "FastAPI", "PostgreSQL", "Redis"];
-const projects = [
-  { name: "IrisDB", desc: "C++ relational database engine", symbol: "DB", url: GITHUB },
-  { name: "HydroGate", desc: "C++ distributed rate-limiting proxy", symbol: "<>", url: GITHUB },
-  { name: "MessBook", desc: "FastAPI · Hostel management backend", symbol: "Py", url: GITHUB },
+const hotbar = ["C++", "Py", "PG", "API", "RDS", "", "", "", ""];
+const hotbarNames = ["C++", "Python", "PostgreSQL", "FastAPI", "Redis"];
+const loot = [
+  {
+    name: "IrisDB",
+    item: "Diamond",
+    Icon: Gem,
+    lines: ["C++ relational database engine", "B+ tree storage · SQL parser"],
+    x: 222,
+  },
+  {
+    name: "HydroGate",
+    item: "Enchanted Book",
+    Icon: BookOpen,
+    lines: ["C++ distributed rate-limiting proxy", "Token bucket · Redis sync"],
+    x: 236,
+  },
+  {
+    name: "MessBook",
+    item: "Redstone Torch",
+    Icon: Flame,
+    lines: ["FastAPI hostel management backend", "PostgreSQL · REST"],
+    x: 250,
+  },
 ];
 
 function Index() {
   const trackRef = useRef<HTMLDivElement>(null);
+  const cartRef = useRef<HTMLDivElement>(null);
   const [moving, setMoving] = useState(false);
   const [open, setOpen] = useState(false);
-  const [projectsOpen, setProjectsOpen] = useState(false);
   const [activeWorld, setActiveWorld] = useState(0);
+  const [biome, setBiome] = useState<Biome>("spawn");
   const [achievement, setAchievement] = useState(false);
-  const [selectedProject, setSelectedProject] = useState(0);
 
   useEffect(() => {
     let raf = 0;
@@ -59,7 +85,6 @@ function Index() {
     let achievementTimer: ReturnType<typeof setTimeout>;
     let lastTime = 0;
     let previousWorld = -1;
-    let chestEntered = false;
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const tick = (time: number) => {
       const max = window.innerWidth * 3;
@@ -69,20 +94,22 @@ function Index() {
       current = reducedMotion ? target : current + (target - current) * (1 - Math.exp(-8 * dt));
       if (trackRef.current) trackRef.current.style.transform = `translate3d(${-current}px,0,0)`;
       const progress = current / window.innerWidth;
+      if (cartRef.current) {
+        const x = progress + 0.5;
+        const y = terrainY(x);
+        const slope = (terrainY(x + 0.02) - terrainY(x - 0.02)) / 0.04;
+        const angle = (Math.atan2(slope * window.innerHeight, 100 * window.innerWidth) * 180) / Math.PI;
+        cartRef.current.style.top = `${y}vh`;
+        cartRef.current.style.transform = `translate(-50%, -100%) rotate(${angle}deg)`;
+      }
       const world = worldAt(progress);
       if (world !== previousWorld) {
         previousWorld = world;
         setActiveWorld(world);
+        setBiome(biomeAt(progress));
         clearTimeout(achievementTimer);
         setAchievement(world === 3);
         if (world === 3) achievementTimer = setTimeout(() => setAchievement(false), 9000);
-      }
-      if (isNearProjectChest(progress) && !chestEntered) {
-        chestEntered = true;
-        setProjectsOpen(true);
-      } else if (progress < 1.65 || progress > 2.5) {
-        chestEntered = false;
-        setProjectsOpen(false);
       }
       raf = requestAnimationFrame(tick);
     };
@@ -117,73 +144,45 @@ function Index() {
             />
           ))}
 
-          <div
-            className="rail-track pointer-events-none absolute left-0 h-5 w-full"
-            style={{ bottom: "40%" }}
-          />
-
-          {/* Section 1: Spawn */}
-          <div className="spawn-sign" style={{ transform: `scale(${SPAWN_SIGN_SCALE})` }}>
-            <div className="mc-wood px-8 py-6 text-center">
-              <h1>Welcome to {NAME}'s World</h1>
-              <p className="mt-4">Role: Backend Engineer</p>
-            </div>
-          </div>
-          <div className="spawn-prompt animate-blink text-gold text-pixel-shadow">
-            Scroll to Explore ▶▶
-          </div>
-
-          {/* Section 2: Cave */}
-          <div className="mc-panel cave-crafting absolute">
-            <p className="mb-3 text-[10px] text-muted-foreground">Crafting — Tech Stack</p>
-            <div className="grid grid-cols-3 gap-1">
-              {Array.from({ length: 9 }).map((_, i) => {
-                const item = [0, 1, 2, 4, 7].indexOf(i);
-                return (
-                  <div
-                    key={i}
-                    className="mc-slot mc-hover crafting-slot flex items-center justify-center text-center"
-                  >
-                    {item >= 0 && <span className="text-pixel-shadow">{stack[item]}</span>}
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-
-          {/* Section 3: Nether */}
-          <Button
-            variant="ghost"
-            className={`physical-chest ${projectsOpen ? "chest-is-open" : ""}`}
-            onClick={() => setProjectsOpen(true)}
-            aria-label="Open Large Chest projects"
-            title="Large Chest — Projects"
+          <svg
+            className="rail-svg pointer-events-none absolute inset-0 h-full w-full"
+            viewBox="0 0 400 100"
+            preserveAspectRatio="none"
+            aria-hidden="true"
           >
-            <span className="chest-sprite">
-              <img
-                src={largeChest}
-                width={816}
-                height={816}
-                loading="lazy"
-                alt="Large wooden chest"
-                className="chest-base"
-              />
-              <img
-                src={largeChest}
-                width={816}
-                height={816}
-                loading="lazy"
-                alt=""
-                className="chest-lid"
-              />
-            </span>
-          </Button>
+            <path d={terrainPath()} className="rail-ties" vectorEffect="non-scaling-stroke" />
+            <path d={terrainPath()} className="rail-steel" vectorEffect="non-scaling-stroke" />
+          </svg>
 
-          {/* Section 4: Cherry */}
+          {/* Nether loot drops */}
+          {loot.map(({ name, item, Icon, lines, x }) => (
+            <button
+              key={name}
+              type="button"
+              className="loot-drop"
+              style={{ left: `${x}vw`, top: `${terrainY(x / 100)}vh` }}
+              aria-label={`${item}: ${name} — ${lines.join(". ")}`}
+            >
+              <Icon className="loot-icon" size={28} aria-hidden="true" />
+              <span className="mc-tooltip" role="tooltip">
+                <strong>{name}</strong>
+                <em>{item}</em>
+                {lines.map((l) => (
+                  <span key={l}>{l}</span>
+                ))}
+                <a href={GITHUB} target="_blank" rel="noreferrer" tabIndex={-1}>
+                  github ↗
+                </a>
+              </span>
+            </button>
+          ))}
+
+          {/* Cherry: Ender chest */}
           <Button
             variant="ghost"
             onClick={() => setOpen(true)}
             className="contact-chest"
+            style={{ top: `${terrainY(3.88)}vh` }}
             title="Ender Chest — Contact"
             aria-label="Open Ender Chest for contact links"
           >
@@ -191,31 +190,50 @@ function Index() {
           </Button>
         </div>
 
-        {/* Fixed minecart */}
+        {/* Terrain-following minecart */}
         <div
-          className="pointer-events-none absolute left-1/2 -translate-x-1/2"
-          style={{ bottom: "calc(40% + 6px)" }}
+          ref={cartRef}
+          className="cart-rider pointer-events-none absolute left-1/2"
+          data-biome={biome}
+          style={{ top: `${terrainY(0.5)}vh`, transform: "translate(-50%,-100%)" }}
         >
           <img
             src={minecart}
             alt="Minecart"
             width={120}
             height={81}
-            className={`w-28 ${moving ? "animate-rattle" : ""}`}
+            style={{ width: `${7 * CART_SCALE * 1.15}rem` }}
+            className={moving ? "animate-rattle" : ""}
           />
         </div>
+
+        {activeWorld === 0 && (
+          <div className="mc-chat" aria-label="Chat">
+            <p className="chat-server">[Server] Welcome to the server.</p>
+            <p>&lt;Sahid_Al_Afzal&gt; I'm a Backend &amp; Systems Engineer.</p>
+            <p className="chat-system">[System] Use the scroll wheel to explore.</p>
+          </div>
+        )}
+
         {activeWorld === 1 && (
-          <div
-            className="xp-hud"
-            aria-label={`LeetCode XP level ${PLAYER_STATS.level}; CGPA ${PLAYER_STATS.cgpa.toFixed(1)}`}
-          >
-            <div className="xp-name">{PLAYER_STATS.cgpa.toFixed(1)} CGPA</div>
-            <div className="xp-level">{PLAYER_STATS.level}</div>
+          <div className="xp-hud">
+            <div className="name-tag">{PLAYER_STATS.cgpa.toFixed(1)} CGPA</div>
+            <div className="xp-level" aria-label={`XP level ${PLAYER_STATS.level}, LeetCode solved`}>
+              {PLAYER_STATS.level}
+            </div>
             <div className="xp-bar">
               <div className="xp-fill" />
             </div>
+            <ul className="hotbar" aria-label="Tech stack hotbar">
+              {hotbar.map((label, i) => (
+                <li key={i} className={i === 0 ? "selected" : ""} title={hotbarNames[i]}>
+                  {label}
+                </li>
+              ))}
+            </ul>
           </div>
         )}
+
         {achievement && (
           <aside className="achievement-toast" role="status">
             <Trophy className="achievement-icon" size={32} />
@@ -232,43 +250,6 @@ function Index() {
         )}
       </div>
 
-      <Dialog open={projectsOpen} onOpenChange={setProjectsOpen}>
-        <DialogContent className="large-inventory">
-          <DialogTitle className="inventory-title text-gold">Large Chest</DialogTitle>
-          <DialogDescription className="text-[9px] text-muted-foreground">
-            Projects
-          </DialogDescription>
-          <div className="inventory-grid">
-            {Array.from({ length: 54 }, (_, i) => {
-              const project = projects[i];
-              return project ? (
-                <Button
-                  key={i}
-                  variant="ghost"
-                  className="inventory-cell project-slot"
-                  aria-label={project.name}
-                  aria-pressed={selectedProject === i}
-                  title={project.name}
-                  onClick={() => setSelectedProject(i)}
-                >
-                  {project.symbol}
-                </Button>
-              ) : (
-                <div key={i} className="inventory-cell" aria-hidden="true" />
-              );
-            })}
-          </div>
-          <div className="project-detail">
-            <h3>{projects[selectedProject]?.name}</h3>
-            <p>{projects[selectedProject]?.desc}</p>
-            <Button asChild variant="secondary" className="mc-btn project-link">
-              <a href={projects[selectedProject]?.url} target="_blank" rel="noreferrer">
-                GitHub ↗
-              </a>
-            </Button>
-          </div>
-        </DialogContent>
-      </Dialog>
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="mc-panel w-[calc(100vw-32px)] max-w-80 p-6">
           <DialogTitle className="inventory-title text-ender">Ender Chest</DialogTitle>
